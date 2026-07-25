@@ -5,6 +5,6 @@ export default function errorHandler(error, req, res, next) {
         error.sendAnswer(res);
     } else {
         console.log(error);
-        new BaseError().sendAnswer(res)
+        new BaseError().sendAnswer(res);
     }
 }
