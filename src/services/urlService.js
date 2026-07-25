@@ -39,6 +39,8 @@ export async function findAllShortUrls() {
 
 export async function findShortUrlStats(shortUrl) {
 
+    if (shortUrl.length <= 0 || shortUrl.length > 9) throw new BadRequestError("The URL is invalid");
+
     const urlStats = await url.findOne({ shortUrl })
 
     if (!urlStats) throw new NotFoundError("URL not found")
@@ -47,6 +49,8 @@ export async function findShortUrlStats(shortUrl) {
 }
 
 export async function findOriginalUrl(shortUrl) {
+
+    if (shortUrl.length <= 0 || shortUrl.length > 9) throw new BadRequestError("The URL is invalid");
 
     const urlDatas = await url.findOneAndUpdate(
         { shortUrl },
@@ -62,6 +66,8 @@ export async function findOriginalUrl(shortUrl) {
 
 export async function deleteShortUrl(shortUrl) {
 
+    if (shortUrl.length <= 0 || shortUrl.length > 9) throw new BadRequestError("The URL is invalid");
+
     const deletedUrl = await url.findOneAndDelete({ shortUrl });
 
     if (!deletedUrl) throw new NotFoundError("URL not found");
@@ -70,6 +76,8 @@ export async function deleteShortUrl(shortUrl) {
 }
 
 export async function renewShortUrl(shortUrl) {
+
+    if (shortUrl.length <= 0 || shortUrl.length > 9) throw new BadRequestError("The URL is invalid");
 
     const updatedUrl = await url.findOneAndUpdate(
         { shortUrl },
