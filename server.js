@@ -3,7 +3,7 @@ import dbConnection from "./src/config/dbConnect.js";
 import app from "./src/app.js";
 import dns from 'node:dns/promises';
 
-// Resolve o problema de compatibilidade entre o nodejs:24 e a resolução do DNS SRV do mongo  
+// Resolve the compatibility problem about nodejs:24 and mongo DNS SRV resolution 
 dns.setServers([
   '1.1.1.1',
   '8.8.8.8'
@@ -21,7 +21,7 @@ async function startServer() {
             })
         })
     } catch (error) {
-        console.error("Erro ao conectar com o BD", error)
+        console.error("Error connecting to the database", error)
     }
 }
 
