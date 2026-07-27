@@ -19,7 +19,7 @@ export async function login(email, password) {
     const userExists = await user.findOne({email});
     if(!userExists) throw new BadRequestError("Invalid email or password");
 
-    const validationPassword = bcrypt.compare(password, userExists.hashPassword);
+    const validationPassword = await bcrypt.compare(password, userExists.hashPassword);
     if(!validationPassword) throw new BadRequestError("Invalid email or password");
 
     const token = generateAccessToken({id: userExists._id});
