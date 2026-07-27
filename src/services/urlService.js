@@ -1,9 +1,6 @@
 import url from "../models/Url.js"
-import generateShortUrl from "../helpers/generateShortUrl.js"
-import urlIsExpired from "../helpers/urlIsExpired.js";
 import NotFoundError from "../errors/NotFoundError.js";
 import BadRequestError from "../errors/BadRequestError.js";
-import isValidUrl from "../helpers/isValidUrl.js";
 import BaseError from "../errors/BaseError.js";
 import UnauthorizedError from "../errors/UnauthorizedError.js";
 
@@ -85,4 +82,34 @@ export async function renewShortUrl(shortUrl, userId) {
     if (!updatedUrl) throw new NotFoundError("URL not found");
 
     return updatedUrl;
+}
+
+
+// HELPERS FUNCTIONS
+function generateShortUrl(){
+    let shortUrl = ""
+    let i = 0;
+    const letters = "abcdefghijklmnopqrstuvwxyz".split("");
+    while(i <= 2){
+        const randomNumber = Math.floor(Math.random() * (25 - 0 + 1)) + 0;
+        shortUrl += letters[randomNumber] + randomNumber;
+        i++;  
+    }
+
+    return shortUrl;
+}
+
+function isValidUrl(originalUrl){
+    try {
+        new URL(originalUrl);
+        return true;
+    } catch (error) {
+        return false;
+    };
+}
+    
+function urlIsExpired({expiresAtMs, updatedAt}) {
+    const updatedAtMs = updatedAt.getTime();
+
+    return Date.now() - updatedAtMs >= expiresAtMs;
 }
