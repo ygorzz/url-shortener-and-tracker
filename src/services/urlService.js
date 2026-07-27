@@ -14,11 +14,7 @@ export async function createShortUrl(originalUrl) {
     for (let attempt = 0; attempt < 3; attempt++) {
         try {
             const shortUrl = generateShortUrl();
-            const newData = {
-                originalUrl,
-                shortUrl
-            }
-            const createdUrl = await url.create(newData);
+            const createdUrl = await url.create({originalUrl, shortUrl});
             return createdUrl;
         } catch (error) {
             if (error.code !== 11000) {
