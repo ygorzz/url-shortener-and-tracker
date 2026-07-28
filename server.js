@@ -9,7 +9,7 @@ dns.setServers([
   '8.8.8.8'
 ]);
 
-const PORT = 8000;
+const PORT = process.env.PORT || "8000";
 
 async function startServer() {
     try {
