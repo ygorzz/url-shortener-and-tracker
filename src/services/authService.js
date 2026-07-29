@@ -1,6 +1,7 @@
 import user from "../models/User.js";
 import ConflictError from "../errors/ConflictError.js";
 import BadRequestError from "../errors/BadRequestError.js";
+import UnauthorizedError from "../errors/UnauthorizedError.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
@@ -23,10 +24,10 @@ export async function login(email, password) {
     validateLoginFields(email, password);
 
     const userExists = await user.findOne({ email });
-    if (!userExists) throw new BadRequestError("Invalid email or password");
+    if (!userExists) throw new UnauthorizedError("Invalid email or password");
 
     const validationPassword = await bcrypt.compare(password, userExists.hashPassword);
-    if (!validationPassword) throw new BadRequestError("Invalid email or password");
+    if (!validationPassword) throw new UnauthorizedError("Invalid email or password");
 
     const token = generateAccessToken({ id: userExists._id });
 

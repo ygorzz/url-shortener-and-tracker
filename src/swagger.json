@@ -1,0 +1,1014 @@
+{
+    "openapi": "3.0.4",
+    "info": {
+        "title": "URL Shortener API",
+        "description": "This API can shorten URLS and to track the URL's stats.",
+        "version": "1.0.0"
+    },
+    "servers": [
+        {
+            "url": "http://localhost:8000",
+            "description": "Test API"
+        }
+    ],
+    "paths": {
+        "/auth/register": {
+            "post": {
+                "summary": "New User registration",
+                "description": "This route is responsible for register a new user. The request must include the user's name, email and password.",
+                "tags": [
+                    "Auth"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/RegisterUser"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "400": {
+                        "description": "The request contains invalid or missing data",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                },
+                                "examples": {
+                                    "error": {
+                                        "value": {
+                                            "message": "The name, email and password are required",
+                                            "status": 400
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "409": {
+                        "description": "Some data already exists",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                },
+                                "examples": {
+                                    "error": {
+                                        "value": {
+                                            "message": "An account with this email already exists",
+                                            "status": 409
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                },
+                                "examples": {
+                                    "error": {
+                                        "value": {
+                                            "message": "Internal Server Error",
+                                            "status": 500
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "201": {
+                        "description": "User registered",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/RegisterUserResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/auth/login": {
+            "post": {
+                "summary": "User's login",
+                "description": "This route is responsible for login an user. The request must include the user's email and password.",
+                "tags": [
+                    "Auth"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/LoginUser"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "400": {
+                        "description": "The request contains invalid or missing data",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                },
+                                "examples": {
+                                    "error": {
+                                        "value": {
+                                            "message": "The email and password are required",
+                                            "status": 400
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Invalid email or password",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                },
+                                "examples": {
+                                    "error": {
+                                        "value": {
+                                            "message": "No token provided",
+                                            "status": 401
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                },
+                                "examples": {
+                                    "error": {
+                                        "value": {
+                                            "message": "Internal Server Error",
+                                            "status": 500
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "200": {
+                        "description": "Login successful",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/LoginUserResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/shortUrl": {
+            "post": {
+                "summary": "Shortened URL creation",
+                "description": "This route is responsible for to shorten an URL for an user. The request must include an originalUrl to create a shorten from it",
+                "tags": [
+                    "URLs"
+                ],
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "originalUrl": {
+                                    "type": "string"
+                                }
+                            },
+                            "examples": {
+                                "shortUrl": {
+                                    "value": {
+                                        "originalUrl": "https://swagger.io/docs/specification/v3_0/describing-request-body/describing-request-body/"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                },
+                                "examples": {
+                                    "error": {
+                                        "value": {
+                                            "message": "No token provided",
+                                            "status": 401
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "The request contains invalid or missing data",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                },
+                                "examples": {
+                                    "error": {
+                                        "value": {
+                                            "message": "The originalUrl is required",
+                                            "status": 400
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                },
+                                "examples": {
+                                    "error": {
+                                        "value": {
+                                            "message": "Internal Server Error",
+                                            "status": 500
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "201": {
+                        "description": "Created",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "message": {
+                                        "type": "string"
+                                    },
+                                    "$ref": "#/components/schemas/CreateShortUrl"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/shortUrls": {
+            "get": {
+                "summary": "List of User's shortened URLs",
+                "description": "This route is responsible for list all user's shortened URLs.",
+                "tags": [
+                    "URLs"
+                ],
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "responses": {
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                },
+                                "examples": {
+                                    "error": {
+                                        "value": {
+                                            "message": "No token provided",
+                                            "status": 401
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                },
+                                "examples": {
+                                    "error": {
+                                        "value": {
+                                            "message": "Internal Server Error",
+                                            "status": 500
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/ListShortUrl"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/stats/{shortUrl}": {
+            "get": {
+                "summary": "Display shortended URL stats",
+                "description": "Display shortended URL stats like access count. The request must include a shortUrl",
+                "tags": [
+                    "URLs"
+                ],
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "shortUrl",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "required": true,
+                        "description": "The shortened URL the user wants to get stats"
+                    }
+                ],
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "responses": {
+                    "400": {
+                        "description": "The shortened URL is invalid",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                },
+                                "examples": {
+                                    "error": {
+                                        "value": {
+                                            "message": "The Url is invalid",
+                                            "status": 400
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                },
+                                "examples": {
+                                    "error": {
+                                        "value": {
+                                            "message": "No token provided",
+                                            "status": 401
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "URL not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                },
+                                "examples": {
+                                    "error": {
+                                        "value": {
+                                            "message": "URL not found",
+                                            "status": 404
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                },
+                                "examples": {
+                                    "error": {
+                                        "value": {
+                                            "message": "Internal Server Error",
+                                            "status": 500
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ListShortUrl"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/redirect/{shortUrl}": {
+            "get": {
+                "summary": "Shortened URL redirection",
+                "description": "This route redirects shortened URL to original URL",
+                "tags": [
+                    "URLs"
+                ],
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "shortUrl",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "required": true,
+                        "description": "The shortened URL the user wants to redirect"
+                    }
+                ],
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "responses": {
+                    "400": {
+                        "description": "The shortened URL is invalid",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                },
+                                "examples": {
+                                    "error": {
+                                        "value": {
+                                            "message": "The Url is invalid",
+                                            "status": 400
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                },
+                                "examples": {
+                                    "error": {
+                                        "value": {
+                                            "message": "No token provided",
+                                            "status": 401
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "URL not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                },
+                                "examples": {
+                                    "error": {
+                                        "value": {
+                                            "message": "URL not found",
+                                            "status": 404
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                },
+                                "examples": {
+                                    "error": {
+                                        "value": {
+                                            "message": "Internal Server Error",
+                                            "status": 500
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "301": {
+                        "description": "The client is permanently redirected to the original URL.",
+                        "headers": {
+                            "Location": {
+                                "description": "The URL to which the client is redirected.",
+                                "schema": {
+                                    "type": "string",
+                                    "format": "uri"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/{shortUrl}": {
+            "delete": {
+                "summary": "Shortened URL deletion",
+                "description": "This route deletes a shortened URL",
+                "tags": [
+                    "URLs"
+                ],
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "shortUrl",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "required": true,
+                        "description": "The shortened URL the user wants to delete"
+                    }
+                ],
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "responses": {
+                    "400": {
+                        "description": "The shortened URL is invalid",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                },
+                                "examples": {
+                                    "error": {
+                                        "value": {
+                                            "message": "The Url is invalid",
+                                            "status": 400
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                },
+                                "examples": {
+                                    "error": {
+                                        "value": {
+                                            "message": "No token provided",
+                                            "status": 401
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "URL not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                },
+                                "examples": {
+                                    "error": {
+                                        "value": {
+                                            "message": "URL not found",
+                                            "status": 404
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                },
+                                "examples": {
+                                    "error": {
+                                        "value": {
+                                            "message": "Internal Server Error",
+                                            "status": 500
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "message": {
+                                        "type": "string"
+                                    },
+                                    "$ref": "#/components/schemas/DeleteShortUrl"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "renew/{shortUrl}": {
+            "put": {
+                "summary": "Shortened URL renewal",
+                "description": "This route renews an expired shortened URL. The `updatedAt` field is updated. As a result, the token is renewed for another day.",
+                "tags": [
+                    "URLs"
+                ],
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "shortUrl",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "required": true,
+                        "description": "The shortened URL the user wants to renew"
+                    }
+                ],
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "responses": {
+                    "400": {
+                        "description": "The shortened URL is invalid",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                },
+                                "examples": {
+                                    "error": {
+                                        "value": {
+                                            "message": "The Url is invalid",
+                                            "status": 400
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                },
+                                "examples": {
+                                    "error": {
+                                        "value": {
+                                            "message": "No token provided",
+                                            "status": 401
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "URL not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                },
+                                "examples": {
+                                    "error": {
+                                        "value": {
+                                            "message": "URL not found",
+                                            "status": 404
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                },
+                                "examples": {
+                                    "error": {
+                                        "value": {
+                                            "message": "Internal Server Error",
+                                            "status": 500
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ListShortUrl"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "CreateShortUrl": {
+                "type": "object",
+                "properties": {
+                    "message": {
+                        "type": "string",
+                        "example": "URL successfully shortened. It will expire after 24 hours."
+                    },
+                    "shortUrl": {
+                        "type": "object",
+                        "properties": {
+                            "originalUrl": {
+                                "type": "string",
+                                "example": "https://swagger.io/docs/specification/v3_0/describing-request-body/describing-request-body/"
+                            },
+                            "shortUrl": {
+                                "type": "string",
+                                "example": "a0b1c2"
+                            },
+                            "accessCount": {
+                                "type": "integer",
+                                "example": 3
+                            },
+                            "expiresInMs": {
+                                "type": "integer",
+                                "example": 86400000
+                            },
+                            "userId": {
+                                "type": "string",
+                                "example": "6a6b3904722fa1381cc1354"
+                            },
+                            "createdAt": {
+                                "type": "string",
+                                "format": "date-time"
+                            },
+                            "updatedAt": {
+                                "type": "string",
+                                "format": "date-time"
+                            },
+                            "_id": {
+                                "type": "string",
+                                "example": "6a6a7e9gfeed683r4404caf4"
+                            }
+                        }
+                    }
+                }
+            },
+            "DeleteShortUrl": {
+                "type": "object",
+                "properties": {
+                    "message": {
+                        "type": "string",
+                        "example": "URL successfully removed"
+                    },
+                    "shortUrl": {
+                        "type": "object",
+                        "properties": {
+                            "originalUrl": {
+                                "type": "string",
+                                "example": "https://swagger.io/docs/specification/v3_0/describing-request-body/describing-request-body/"
+                            },
+                            "shortUrl": {
+                                "type": "string",
+                                "example": "a0b1c2"
+                            },
+                            "accessCount": {
+                                "type": "integer",
+                                "example": 3
+                            },
+                            "expiresInMs": {
+                                "type": "integer",
+                                "example": 86400000
+                            },
+                            "userId": {
+                                "type": "string",
+                                "example": "6a6b3904722fa1381cc1354"
+                            },
+                            "createdAt": {
+                                "type": "string",
+                                "format": "date-time"
+                            },
+                            "updatedAt": {
+                                "type": "string",
+                                "format": "date-time"
+                            },
+                            "_id": {
+                                "type": "string",
+                                "example": "6a6a7e9gfeed683r4404caf4"
+                            }
+                        }
+                    }
+                }
+            },
+            "ListShortUrl": {
+                "type": "object",
+                "properties": {
+                    "originalUrl": {
+                        "type": "string",
+                        "example": "https://swagger.io/docs/specification/v3_0/describing-request-body/describing-request-body/"
+                    },
+                    "shortUrl": {
+                        "type": "string",
+                        "example": "a0b1c2"
+                    },
+                    "accessCount": {
+                        "type": "integer",
+                        "example": 3
+                    },
+                    "expiresInMs": {
+                        "type": "integer",
+                        "example": 86400000
+                    },
+                    "userId": {
+                        "type": "string",
+                        "example": "6a6b3904722fa1381cc1354"
+                    },
+                    "createdAt": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updatedAt": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "_id": {
+                        "type": "string",
+                        "example": "6a6a7e9gfeed683r4404caf4"
+                    }
+                }
+            },
+            "RegisterUser": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "example": "labubu"
+                    },
+                    "email": {
+                        "type": "string",
+                        "example": "l@l.com"
+                    },
+                    "password": {
+                        "type": "string",
+                        "example": "labubu123"
+                    }
+                }
+            },
+            "RegisterUserResponse": {
+                "type": "object",
+                "properties": {
+                    "message": {
+                        "type": "string",
+                        "example": "User registered successfully"
+                    },
+                    "registeredUser": {
+                        "type": "object",
+                        "properties": {
+                            "name": {
+                                "type": "string",
+                                "example": "labubu"
+                            },
+                            "email": {
+                                "type": "string",
+                                "example": "l@l.com"
+                            },
+                            "password": {
+                                "type": "string",
+                                "example": "labubu123"
+                            }
+                        }
+                    }
+                }
+            },
+            "LoginUser": {
+                "type": "object",
+                "properties": {
+                    "email": {
+                        "type": "string",
+                        "example": "l@l.com"
+                    },
+                    "password": {
+                        "type": "string",
+                        "example": "labubu123"
+                    }
+                }
+            },
+            "LoginUserResponse": {
+                "type": "object",
+                "properties": {
+                    "message": {
+                        "type": "string",
+                        "example": "Login sucessful"
+                    },
+                    "token": {
+                        "type": "string",
+                        "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c"
+                    }
+                }
+            },
+            "Error": {
+                "type": "object",
+                "properties": {
+                    "message": {
+                        "type": "string"
+                    },
+                    "status": {
+                        "type": "integer"
+                    }
+                }
+            }
+        },
+        "securitySchemes": {
+            "bearerAuth": {
+                "type": "http",
+                "scheme": "bearer",
+                "bearerFormat": "JWT"
+            }
+        }
+    }
+}
