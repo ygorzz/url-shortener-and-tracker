@@ -5,7 +5,7 @@ export default class UrlController {
             const userId = req.user.id;
             const { originalUrl } = req.body;
             const shortUrl = await urlService.createShortUrl(originalUrl, userId);
-            res.status(201).json({ message: "URL encurtada com sucesso. Será expirada após 24 horas", shortUrl });
+            res.status(201).json({ message: "URL successfully shortened. It will expire after 24 hours.", shortUrl });
         } catch (error) {
             next(error);
         }
@@ -49,7 +49,7 @@ export default class UrlController {
             const userId = req.user.id;
             const { shortUrl } = req.params;
             const deletedUrl = await urlService.deleteShortUrl(shortUrl, userId);
-            res.status(200).json({ message: "URL removida com sucesso", deletedUrl })
+            res.status(200).json({ message: "URL successfully removed", deletedUrl })
         } catch (error) {
             next(error);
         }
