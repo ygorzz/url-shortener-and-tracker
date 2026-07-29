@@ -2,7 +2,7 @@
     "openapi": "3.0.4",
     "info": {
         "title": "URL Shortener API",
-        "description": "This API can shorten URLS and to track the URL's stats.",
+        "description": "This API aims to shorten URLs, making it easier to share very long ones—and enables the tracking of statistics, such as the number of visits (clicks), for your shared URL.",
         "version": "1.0.0"
     },
     "servers": [
@@ -15,7 +15,7 @@
         "/auth/register": {
             "post": {
                 "summary": "New User registration",
-                "description": "This route is responsible for register a new user. The request must include the user's name, email and password.",
+                "description": "This route is responsible for registering a new user. The request must include the user's name, email, and password. The password must be between 4 and 16 characters long. The submitted email must not already be registered.",
                 "tags": [
                     "Auth"
                 ],
@@ -99,7 +99,7 @@
         "/auth/login": {
             "post": {
                 "summary": "User's login",
-                "description": "This route is responsible for login an user. The request must include the user's email and password.",
+                "description": "This route handles user login. The request must include the user's email and password. If no user exists with these credentials, an `Unauthorized` error is returned; otherwise, a success message and the server-generated `JWT token` are returned.",
                 "tags": [
                     "Auth"
                 ],
@@ -180,10 +180,11 @@
                 }
             }
         },
-        "/shortUrl": {
+        "/shortUrls": {
             "post": {
+                "operationId": "createShortUrl",
                 "summary": "Shortened URL creation",
-                "description": "This route is responsible for to shorten an URL for an user. The request must include an originalUrl to create a shorten from it",
+                "description": "This route is responsible for shortening a URL for the user. The request must include an `originalUrl` to generate the shortened version. The created shortened URL will expire after 24 hours. It requires authentication.",
                 "tags": [
                     "URLs"
                 ],
@@ -281,12 +282,11 @@
                         }
                     }
                 }
-            }
-        },
-        "/shortUrls": {
+            },
             "get": {
+                "operationId": "getShortUrls",
                 "summary": "List of User's shortened URLs",
-                "description": "This route is responsible for list all user's shortened URLs.",
+                "description": "This route is responsible for listing all of the user's shortened URLs. It requires authentication.",
                 "tags": [
                     "URLs"
                 ],
@@ -348,10 +348,10 @@
                 }
             }
         },
-        "/stats/{shortUrl}": {
+        "/shortUrls/{shortUrl}/stats": {
             "get": {
                 "summary": "Display shortended URL stats",
-                "description": "Display shortended URL stats like access count. The request must include a shortUrl",
+                "description": "Displays statistics for shortened URLs, such as the access count. The request must include a `shortUrl`. It requires authentication.",
                 "tags": [
                     "URLs"
                 ],
@@ -457,10 +457,10 @@
                 }
             }
         },
-        "/redirect/{shortUrl}": {
+        "/shortUrls/{shortUrl}/redirect": {
             "get": {
                 "summary": "Shortened URL redirection",
-                "description": "This route redirects shortened URL to original URL",
+                "description": "This route is responsible for redirecting the shortened URL to the original URL. It requires authentication.",
                 "tags": [
                     "URLs"
                 ],
@@ -568,10 +568,10 @@
                 }
             }
         },
-        "/{shortUrl}": {
+        "/shortUrls/{shortUrl}": {
             "delete": {
                 "summary": "Shortened URL deletion",
-                "description": "This route deletes a shortened URL",
+                "description": "This route is responsible for delete a shortened URL. It requires authentication.",
                 "tags": [
                     "URLs"
                 ],
@@ -681,10 +681,10 @@
                 }
             }
         },
-        "renew/{shortUrl}": {
+        "/shortUrls/{shortUrl}/renew": {
             "put": {
                 "summary": "Shortened URL renewal",
-                "description": "This route renews an expired shortened URL. The `updatedAt` field is updated. As a result, the token is renewed for another day.",
+                "description": "This route is responsible for renew an expired shortened URL. The `updatedAt` field is updated. As a result, the token is renewed for another day. It requires authentication.",
                 "tags": [
                     "URLs"
                 ],
@@ -835,7 +835,10 @@
                                 "type": "string",
                                 "example": "6a6a7e9gfeed683r4404caf4"
                             }
-                        }
+                        },
+                        "required": [
+                            "originalUrl"
+                        ]
                     }
                 }
             },
@@ -937,7 +940,12 @@
                         "type": "string",
                         "example": "labubu123"
                     }
-                }
+                },
+                "required": [
+                    "name",
+                    "email",
+                    "password"
+                ]
             },
             "RegisterUserResponse": {
                 "type": "object",
@@ -976,7 +984,11 @@
                         "type": "string",
                         "example": "labubu123"
                     }
-                }
+                },
+                "required": [
+                    "email",
+                    "password"
+                ]
             },
             "LoginUserResponse": {
                 "type": "object",
