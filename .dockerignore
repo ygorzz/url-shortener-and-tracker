@@ -1,0 +1,47 @@
+# Dependencies
+node_modules
+npm-debug.log
+
+# Git
+.git
+.gitignore
+
+# Environment variables
+.env
+.env.*
+!.env.example
+
+# Docker
+docker-compose.yml
+.dockerignore
+
+# IDEs
+.vscode
+.idea
+
+# Operating System
+.DS_Store
+Thumbs.db
+
+# Logs
+logs
+*.log
+
+# Coverage
+coverage
+.nyc_output
+
+# Temporary files
+tmp
+temp
+
+# Tests
+test
+tests
+__tests__
+
+# Documentation
+README.md
+
+# GitHub
+.github
