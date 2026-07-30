@@ -965,9 +965,13 @@
                                 "type": "string",
                                 "example": "l@l.com"
                             },
-                            "password": {
+                            "hashPassword": {
                                 "type": "string",
-                                "example": "labubu123"
+                                "example": "$2b$10$hxL4Nr4DC5Un02.RP.J0V.J0iI6Arnb6BRo0POez7hNKxPQOLgq.S"
+                            },
+                            "_id": {
+                                "type": "string",
+                                "example": "6a6a7e9gfeed683r4404caf4"
                             }
                         }
                     }
