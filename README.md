@@ -1,4 +1,4 @@
-# URL Shortening API
+# URL Shortener and Tracker API
 
 ![Node.js](https://img.shields.io/badge/node-%3E%3D18-green)
 ![Express](https://img.shields.io/badge/express-5.x-black)
@@ -7,73 +7,73 @@
 ![JWT](https://img.shields.io/badge/auth-JWT-orange)
 ![Swagger](https://img.shields.io/badge/docs-Swagger-85EA2D)
 
-## Descrição
+## Description
 
-API REST para encurtamento e rastreamento de URLs, desenvolvida como projeto de portfólio com foco na aplicação de boas práticas de desenvolvimento Back-end utilizando Node.js.
+REST API for URL shortening and tracking, developed as a portfolio project focused on applying Back-end development best practices using Node.js.
 
-A aplicação permite que usuários autenticados criem URLs encurtadas, gerenciem suas URLs, acompanhem estatísticas de acesso, renovem a validade dos links e realizem redirecionamentos para as URLs originais.
+The application allows authenticated users to create shortened URLs, manage their URLs, monitor access statistics, renew URL expiration dates, and redirect users to the original URLs.
 
-O projeto foi desenvolvido utilizando arquitetura em camadas, documentação completa com Swagger/OpenAPI, autenticação JWT, tratamento centralizado de erros, Rate Limiting e containerização completa com Docker.
+The project was built using a layered architecture, complete Swagger/OpenAPI documentation, JWT authentication, centralized error handling, rate limiting, and full Docker containerization.
 
 ---
 
-## Tecnologias utilizadas
+## Technologies Used
 
-| Tecnologia | Versão | Função |
+| Technology | Version | Purpose |
 |---|---|---|
-| [Node.js](https://nodejs.org/) | >= 18 | Ambiente de execução JavaScript |
-| [Express](https://expressjs.com/) | ^5.x | Framework para construção da API |
-| [MongoDB](https://www.mongodb.com/) | — | Banco de dados NoSQL |
-| [Mongoose](https://mongoosejs.com/) | ^9.x | ODM para comunicação com o MongoDB |
-| [JWT](https://jwt.io/) | — | Autenticação baseada em tokens |
-| [bcrypt](https://github.com/kelektiv/node.bcrypt.js) | — | Hash de senhas |
-| [express-rate-limit](https://github.com/express-rate-limit/express-rate-limit) | — | Limitação de requisições |
-| [Swagger UI](https://swagger.io/tools/swagger-ui/) | — | Interface da documentação da API |
-| [OpenAPI 3.0](https://spec.openapis.org/oas/latest.html) | — | Especificação da documentação |
-| [Docker](https://www.docker.com/) | — | Containerização da aplicação |
-| [Docker Compose](https://docs.docker.com/compose/) | — | Orquestração dos containers |
-| [Mongo Express](https://github.com/mongo-express/mongo-express) | — | Interface gráfica para gerenciamento do MongoDB |
+| [Node.js](https://nodejs.org/) | >= 18 | JavaScript runtime environment |
+| [Express](https://expressjs.com/) | ^5.x | Framework for building the API |
+| [MongoDB](https://www.mongodb.com/) | — | NoSQL database |
+| [Mongoose](https://mongoosejs.com/) | ^9.x | ODM for MongoDB |
+| [JWT](https://jwt.io/) | — | Token-based authentication |
+| [bcrypt](https://github.com/kelektiv/node.bcrypt.js) | — | Password hashing |
+| [express-rate-limit](https://github.com/express-rate-limit/express-rate-limit) | — | Request rate limiting |
+| [Swagger UI](https://swagger.io/tools/swagger-ui/) | — | Interactive API documentation |
+| [OpenAPI 3.0](https://spec.openapis.org/oas/latest.html) | — | API documentation specification |
+| [Docker](https://www.docker.com/) | — | Application containerization |
+| [Docker Compose](https://docs.docker.com/compose/) | — | Container orchestration |
+| [Mongo Express](https://github.com/mongo-express/mongo-express) | — | Web-based MongoDB administration interface |
 
-A aplicação utiliza **JavaScript com ES Modules** (`import`/`export`) nativamente.
+The application uses **JavaScript with ES Modules** (`import`/`export`) natively.
 
 ---
 
-## Estrutura do projeto
+## Project Structure
 
 ```text
 url-shortening/
 ├── src/
-│   ├── config/                    # Configurações da aplicação
-│   ├── controllers/               # Recebe as requisições HTTP
-│   ├── services/                  # Regras de negócio e comunicação como banco de dados
-│   ├── routes/                    # Definição das rotas
-│   ├── middlewares/               # Middlewares globais
-│   ├── models/                    # Models do MongoDB
-│   ├── errors/                    # Classes de erros customizadas
-│   └── app.js                     # Configuração do Express
-│   ├── swagger.json               # Especificação OpenAPI
+│   ├── config/                    # Application configuration
+│   ├── controllers/               # Handles HTTP requests
+│   ├── services/                  # Business logic and database communication
+│   ├── routes/                    # Route definitions
+│   ├── middlewares/               # Global middlewares
+│   ├── models/                    # MongoDB models
+│   ├── errors/                    # Custom error classes
+│   └── app.js                     # Express configuration
+│   ├── swagger.json               # OpenAPI specification
 │
-├── docker-compose.yml             # Orquestração dos containers
-├── .dockerignore               
-├── .gitignore               
-├── Dockerfile                     # Container da API
-├── server.js                      # Inicialização da aplicação
+├── docker-compose.yml             # Container orchestration
+├── .dockerignore
+├── .gitignore
+├── Dockerfile                     # API container
+├── server.js                      # Application entry point
 ├── package.json
 └── README.md
 ```
 
 ---
 
-## Funcionalidades
+## Features
 
-### Autenticação
+### Authentication
 
-| Método | Rota | Descrição |
+| Method | Route | Description |
 |---|---|---|
-| `POST` | `auth/register` | Cria uma nova conta |
-| `POST` | `auth/login` | Realiza autenticação e retorna um JWT |
+| `POST` | `auth/register` | Creates a new account |
+| `POST` | `auth/login` | Authenticates a user and returns a JWT |
 
-Após o login, o usuário recebe um **Access Token** que deve ser enviado nas rotas protegidas utilizando:
+After logging in, users receive an **Access Token** that must be sent with protected routes using:
 
 ```http
 Authorization: Bearer <token>
@@ -83,16 +83,16 @@ Authorization: Bearer <token>
 
 ### URLs
 
-| Método | Rota | Descrição |
+| Method | Route | Description |
 |---|---|---|
-| `POST` | `/shortUrls` | Cria uma URL encurtada |
-| `GET` | `/shortUrls` | Lista todas as URLs do usuário autenticado |
-| `GET` | `/shortUrls/:shortUrl/redirect` | Redireciona para a URL original |
-| `GET` | `/shortUrls/:shortUrl/stats` | Retorna estatísticas da URL |
-| `PUT` | `/shortUrls/:shortUrl/renew` | Renova o tempo de expiração da URL |
-| `DELETE` | `shortUrls/:shortUrl` | Remove uma URL |
+| `POST` | `/shortUrls` | Creates a shortened URL |
+| `GET` | `/shortUrls` | Lists all URLs belonging to the authenticated user |
+| `GET` | `/shortUrls/:shortUrl/redirect` | Redirects to the original URL |
+| `GET` | `/shortUrls/:shortUrl/stats` | Returns URL statistics |
+| `PUT` | `/shortUrls/:shortUrl/renew` | Renews the URL expiration time |
+| `DELETE` | `/shortUrls/:shortUrl` | Deletes a URL |
 
-### Campos da URL
+### URL Fields
 
 ```json
 {
@@ -100,13 +100,13 @@ Authorization: Bearer <token>
   "shortUrl": "string",
   "accessCount": 0,
   "expiresInMs": 86400000,
-  "userId": "<id do usuário>"
-  "createdAt: "datetime"
-  "updatedAt: "datetime"
+  "userId": "<user_id>",
+  "createdAt": "datetime",
+  "updatedAt": "datetime"
 }
 ```
 
-### Campos do usuário
+### User Fields
 
 ```json
 {
@@ -118,110 +118,112 @@ Authorization: Bearer <token>
 
 ---
 
-## Funcionalidades e diferenciais
+## Features and Highlights
 
-### Arquitetura
+### Architecture
 
-- **Arquitetura em camadas** — Separação entre Routes, Controllers e Services.
-- **Separação de responsabilidades** — Cada camada possui uma única responsabilidade, com exceção de services que, por ser um projeto pequeno, contém regras de negócio e comunicação com o banco de dados. Dessa forma, não contendo a camada repositories.
-- **ES Modules** — Utilização nativa de `import` e `export`.
-- **Código modular** — Estrutura organizada para facilitar manutenção e escalabilidade.
+- **Layered Architecture** — Clear separation between Routes, Controllers, and Services.
+- **Separation of Responsibilities** — Each layer has a single responsibility. Since this is a relatively small project, the Services layer is responsible for both business logic and database communication, eliminating the need for a dedicated Repository layer.
+- **ES Modules** — Native use of `import` and `export`.
+- **Modular Codebase** — Organized structure that improves maintainability and scalability.
 
-### Segurança
+### Security
 
-- **JWT Authentication** — Autenticação baseada em Access Token.
-- **Autorização** — Cada usuário possui acesso apenas às próprias URLs.
-- **Hash de senhas** — Utilização do bcrypt para armazenamento seguro.
-- **Rate Limiting** — Limitação de requisições por rota utilizando `express-rate-limit`.
-- **Validação de entrada** — Verificação de formato, obrigatoriedade e consistência dos dados.
+- **JWT Authentication** — Token-based authentication using Access Tokens.
+- **Authorization** — Users can only access and manage their own URLs.
+- **Password Hashing** — Secure password storage using bcrypt.
+- **Rate Limiting** — Route-specific request limiting with `express-rate-limit`.
+- **Input Validation** — Validation of required fields, formats, and data consistency.
 
-### Banco de dados
+### Database
 
-- **MongoDB + Mongoose** — Persistência utilizando banco NoSQL.
-- **Relacionamento entre usuários e URLs** — Um usuário pode possuir diversas URLs.
-- **Persistência dos dados** — Utilização de Docker Volume para manter os dados do banco.
+- **MongoDB + Mongoose** — Data persistence using a NoSQL database.
+- **User-URL Relationship** — Each user can own multiple shortened URLs.
+- **Persistent Storage** — Docker Volumes ensure database persistence.
 
-### Tratamento de erros
+### Error Handling
 
-- **Sistema centralizado de erros** — Middleware global para tratamento de exceções.
-- **Classes de erro customizadas** — Implementação de `BaseError`, `BadRequestError`, `UnauthorizedError`, `ConflictError` e `NotFoundError`.
-- **Respostas padronizadas** — Todas as exceções retornam objetos consistentes contendo status HTTP e mensagem.
+- **Centralized Error Handling** — Global middleware for exception handling.
+- **Custom Error Classes** — Implementation of `BaseError`, `BadRequestError`, `UnauthorizedError`, `ConflictError`, and `NotFoundError`.
+- **Standardized Responses** — All errors return consistent HTTP status codes and messages.
 
-### Documentação
+### Documentation
 
-- **Swagger UI** — Interface gráfica para testar todos os endpoints.
-- **OpenAPI 3.0** — Documentação seguindo o padrão da especificação OpenAPI.
-- **Schemas reutilizáveis** — Componentes compartilhados entre as rotas.
-- **Exemplos completos** — Requisições, respostas, parâmetros e códigos HTTP documentados.
+- **Swagger UI** — Interactive interface for testing API endpoints.
+- **OpenAPI 3.0** — Documentation following the OpenAPI specification.
+- **Reusable Schemas** — Shared components across multiple endpoints.
+- **Comprehensive Examples** — Includes request, response, parameter, and status code examples.
 
-### Infraestrutura
+### Infrastructure
 
-- **Docker** — API totalmente containerizada.
-- **Docker Compose** — Orquestração da aplicação.
-- **MongoDB Container** — Banco executando em container dedicado.
-- **Mongo Express** — Interface gráfica para gerenciamento do banco.
-- **Rede interna do Docker** — Comunicação segura entre os containers.
+- **Docker** — Fully containerized API.
+- **Docker Compose** — Application orchestration.
+- **MongoDB Container** — Dedicated MongoDB container.
+- **Mongo Express** — Graphical interface for database management.
+- **Docker Network** — Secure communication between containers.
 
 ---
 
-## Como executar o projeto
+## Running the Project
 
-### Pré-requisitos
+### Prerequisites
 
 - [Docker](https://www.docker.com/)
 - [Docker Compose](https://docs.docker.com/compose/)
 
-### Passo a passo
+### Step-by-step
 
-**1. Clone o repositório e acesse a pasta do projeto:**
+**1. Clone the repository and navigate to the project folder:**
 
 ```bash
-git clone <url-do-repositorio>
+git clone <repository-url>
 
 cd url-shortening
 ```
 
-**2. Configure as variáveis de ambiente:**
+**2. Configure the environment variables:**
 
-Crie um arquivo `.env` na raiz do projeto contendo as configurações necessárias da aplicação.
-Como é um projeto de portifólio, deixei as variáveis de ambiente para conexão com o banco de dados hardcoded no docker-compose.yml. Com o objetivo de facilitar o teste do projeto.
-Logo, no exemplo do arquivo `.env` abaixo, a `PORT` do server e a `JWT_SECRET` podem ser de sua escolha. Já a `DATABASE_CONNECTION_STRING` deve ser a mesma do exemplo.
+Create a `.env` file in the project root containing the required application settings.
 
-Exemplo:
+Since this is a portfolio project, the database connection variables are intentionally hardcoded in the `docker-compose.yml` file to simplify setup and testing.
+
+Therefore, in the example below, you may choose any values for `PORT` and `JWT_SECRET`, while the `DATABASE_CONNECTION_STRING` should remain exactly as shown.
+
+Example:
 
 ```env
-PORT=<porta_que_iniciará_o_server>
-JWT_SECRET=<sua_chave_secreta>
+PORT=<server_port>
+JWT_SECRET=<your_secret_key>
 DATABASE_CONNECTION_STRING=mongodb://admin:admin123@mongodb:27017/url-shortener?authSource=admin
 ```
 
-**3. Construa e inicialize os containers:**
+**3. Build and start the containers:**
 
 ```bash
 docker compose up -d --build
 ```
 
-Serão iniciados automaticamente:
+The following services will be started automatically:
 
-- API Node.js
+- Node.js API
 - MongoDB
 - Mongo Express
 
-**4. Acesse a aplicação**
+**4. Access the application**
 
-| Serviço | Endereço |
+| Service | URL |
 |---|---|
 | API | http://localhost:8000 |
 | Swagger UI | http://localhost:8000/api-docs |
 | Mongo Express | http://localhost:8081 |
 
-**5. Encerrar os containers**
+**5. Stop the containers**
 
 ```bash
 docker compose down
 ```
 
-Caso deseje remover também os volumes persistentes:
+To remove the persistent volumes as well:
 
 ```bash
 docker compose down -v
@@ -229,16 +231,16 @@ docker compose down -v
 
 ---
 
-## Observações
+## Notes
 
-- O projeto foi desenvolvido com foco em práticas utilizadas em aplicações reais de mercado.
-- Toda a autenticação é realizada utilizando JWT.
-- As senhas são armazenadas utilizando hash com bcrypt.
-- O MongoDB executa em container dedicado com persistência através de Docker Volumes.
-- A documentação da API é disponibilizada através do Swagger UI.
-- A aplicação implementa tratamento centralizado de erros e validações de entrada.
-- O código utiliza JavaScript com ES Modules e segue arquitetura em camadas.
+- This project was developed with a focus on best practices commonly used in production-grade applications.
+- Authentication is fully implemented using JWT.
+- Passwords are securely stored using bcrypt hashing.
+- MongoDB runs in a dedicated container with persistent storage through Docker Volumes.
+- The API documentation is available via Swagger UI.
+- The application includes centralized error handling and comprehensive input validation.
+- The codebase uses JavaScript with ES Modules and follows a layered architecture.
 
 ---
 
-*Desenvolvido por **Ygor Santos** — [LinkedIn](https://www.linkedin.com/in/ygor-santos-869152325/) | [GitHub](https://github.com/ygorzz)*
+*Developed by **Ygor Santos** — [LinkedIn](https://www.linkedin.com/in/ygor-santos-869152325/) | [GitHub](https://github.com/ygorzz)*
