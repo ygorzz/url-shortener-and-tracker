@@ -16,7 +16,11 @@ export async function register(name, email, password) {
 
     const registeredUser = await user.create({ name, email, hashPassword });
 
-    return registeredUser;
+    return {
+        _id: registeredUser._id,
+        name: registeredUser.name,
+        email: registeredUser.email
+    };
 }
 
 export async function login(email, password) {

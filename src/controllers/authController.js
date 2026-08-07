@@ -5,7 +5,8 @@ export default class AuthController {
         try {
             const {name, email, password} = req.body;
             const registeredUser = await authService.register(name, email, password);
-            res.status(201).json({message: "User registered successfully", registeredUser})
+
+            res.status(201).json({ message: "User registered successfully", registeredUser });
         } catch (error) {
             next(error)
         }
