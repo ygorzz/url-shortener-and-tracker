@@ -198,9 +198,15 @@
                         "application/json": {
                             "schema": {
                                 "type": "object",
-                                "originalUrl": {
-                                    "type": "string"
-                                }
+                                "properties": {
+                                    "originalUrl": {
+                                        "type": "string",
+                                        "format": "uri"
+                                    }
+                                },
+                                "required": [
+                                    "originalUrl"
+                                ]
                             },
                             "examples": {
                                 "shortUrl": {
@@ -272,10 +278,6 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "type": "object",
-                                    "message": {
-                                        "type": "string"
-                                    },
                                     "$ref": "#/components/schemas/CreateShortUrl"
                                 }
                             }
@@ -460,7 +462,7 @@
         "/shortUrls/{shortUrl}/redirect": {
             "get": {
                 "summary": "Shortened URL redirection",
-                "description": "This route is responsible for redirecting the shortened URL to the original URL. It requires authentication.",
+                "description": "This public route redirects a shortened URL to its original URL.",
                 "tags": [
                     "URLs"
                 ],
@@ -473,11 +475,6 @@
                         },
                         "required": true,
                         "description": "The shortened URL the user wants to redirect"
-                    }
-                ],
-                "security": [
-                    {
-                        "bearerAuth": []
                     }
                 ],
                 "responses": {
@@ -499,26 +496,8 @@
                             }
                         }
                     },
-                    "401": {
-                        "description": "Unauthorized",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/Error"
-                                },
-                                "examples": {
-                                    "error": {
-                                        "value": {
-                                            "message": "No token provided",
-                                            "status": 401
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    },
                     "404": {
-                        "description": "URL not found",
+                        "description": "URL not found or expired",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -527,7 +506,7 @@
                                 "examples": {
                                     "error": {
                                         "value": {
-                                            "message": "URL not found",
+                                            "message": "URL not found or expired",
                                             "status": 404
                                         }
                                     }
@@ -553,14 +532,21 @@
                             }
                         }
                     },
-                    "301": {
-                        "description": "The client is permanently redirected to the original URL.",
+                    "302": {
+                        "description": "The client is temporarily redirected to the original URL. This response is not cached so access tracking and expiration validation remain accurate.",
                         "headers": {
                             "Location": {
                                 "description": "The URL to which the client is redirected.",
                                 "schema": {
                                     "type": "string",
                                     "format": "uri"
+                                }
+                            },
+                            "Cache-Control": {
+                                "description": "Prevents the browser from caching the redirect.",
+                                "schema": {
+                                    "type": "string",
+                                    "example": "no-store"
                                 }
                             }
                         }
@@ -669,10 +655,6 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "type": "object",
-                                    "message": {
-                                        "type": "string"
-                                    },
                                     "$ref": "#/components/schemas/DeleteShortUrl"
                                 }
                             }
@@ -815,7 +797,7 @@
                                 "type": "integer",
                                 "example": 3
                             },
-                            "expiresInMs": {
+                            "expiresAtMs": {
                                 "type": "integer",
                                 "example": 86400000
                             },
@@ -849,7 +831,7 @@
                         "type": "string",
                         "example": "URL successfully removed"
                     },
-                    "shortUrl": {
+                    "deletedUrl": {
                         "type": "object",
                         "properties": {
                             "originalUrl": {
@@ -864,7 +846,7 @@
                                 "type": "integer",
                                 "example": 3
                             },
-                            "expiresInMs": {
+                            "expiresAtMs": {
                                 "type": "integer",
                                 "example": 86400000
                             },
@@ -903,7 +885,7 @@
                         "type": "integer",
                         "example": 3
                     },
-                    "expiresInMs": {
+                    "expiresAtMs": {
                         "type": "integer",
                         "example": 86400000
                     },
@@ -965,10 +947,6 @@
                                 "type": "string",
                                 "example": "l@l.com"
                             },
-                            "hashPassword": {
-                                "type": "string",
-                                "example": "$2b$10$hxL4Nr4DC5Un02.RP.J0V.J0iI6Arnb6BRo0POez7hNKxPQOLgq.S"
-                            },
                             "_id": {
                                 "type": "string",
                                 "example": "6a6a7e9gfeed683r4404caf4"
@@ -999,7 +977,7 @@
                 "properties": {
                     "message": {
                         "type": "string",
-                        "example": "Login sucessful"
+                        "example": "Login successful"
                     },
                     "token": {
                         "type": "string",

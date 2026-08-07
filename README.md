@@ -11,7 +11,7 @@
 
 REST API for URL shortening and tracking, developed as a portfolio project focused on applying Back-end development best practices using Node.js.
 
-The application allows authenticated users to create shortened URLs, manage their URLs, monitor access statistics, renew URL expiration dates, and redirect users to the original URLs.
+The application allows authenticated users to create and manage shortened URLs, monitor access statistics, and renew URL expiration dates. Short URLs can be accessed publicly and redirect users to their original URLs.
 
 The project was built using a layered architecture, complete Swagger/OpenAPI documentation, JWT authentication, centralized error handling, rate limiting, and full Docker containerization.
 
@@ -79,6 +79,8 @@ After logging in, users receive an **Access Token** that must be sent with prote
 Authorization: Bearer <token>
 ```
 
+`GET /shortUrls/:shortUrl/redirect` is public and does not require an access token.
+
 ---
 
 ### URLs
@@ -87,7 +89,7 @@ Authorization: Bearer <token>
 |---|---|---|
 | `POST` | `/shortUrls` | Creates a shortened URL |
 | `GET` | `/shortUrls` | Lists all URLs belonging to the authenticated user |
-| `GET` | `/shortUrls/:shortUrl/redirect` | Redirects to the original URL |
+| `GET` | `/shortUrls/:shortUrl/redirect` | Publicly redirects to the original URL |
 | `GET` | `/shortUrls/:shortUrl/stats` | Returns URL statistics |
 | `PUT` | `/shortUrls/:shortUrl/renew` | Renews the URL expiration time |
 | `DELETE` | `/shortUrls/:shortUrl` | Deletes a URL |
@@ -99,20 +101,20 @@ Authorization: Bearer <token>
   "originalUrl": "string",
   "shortUrl": "string",
   "accessCount": 0,
-  "expiresInMs": 86400000,
+  "expiresAtMs": 86400000,
   "userId": "<user_id>",
   "createdAt": "datetime",
   "updatedAt": "datetime"
 }
 ```
 
-### User Fields
+### Public User Fields
 
 ```json
 {
+  "_id": "<user_id>",
   "name": "string",
-  "email": "string",
-  "hashPassword": "string"
+  "email": "string"
 }
 ```
 
@@ -185,16 +187,16 @@ cd url-shortening
 
 Create a `.env` file in the project root containing the required application settings.
 
-Since this is a portfolio project, the database connection variables are intentionally hardcoded in the `docker-compose.yml` file to simplify setup and testing.
+The MongoDB credentials used by Docker Compose are configured in `docker-compose.yml`. The API connection string is configured through the `.env` file.
 
-Therefore, in the example below, you may choose any values for `PORT` and `JWT_SECRET`, while the `DATABASE_CONNECTION_STRING` should remain exactly as shown.
+Therefore, in the example below, you may choose any values for `PORT` and `JWT_SECRET`, while the `DB_CONNECTION_STRING` should remain exactly as shown.
 
 Example:
 
 ```env
 PORT=<server_port>
 JWT_SECRET=<your_secret_key>
-DATABASE_CONNECTION_STRING=mongodb://admin:admin123@mongodb:27017/url-shortener?authSource=admin
+DB_CONNECTION_STRING=mongodb://admin:admin123@mongodb:27017/url-shortener?authSource=admin
 ```
 
 **3. Build and start the containers:**
