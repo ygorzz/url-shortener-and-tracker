@@ -47,13 +47,20 @@ export async function findOriginalUrl(shortUrl) {
     if (shortUrl.length <= 0 || shortUrl.length > 9) throw new BadRequestError("The URL is invalid");
 
     const urlDatas = await url.findOneAndUpdate(
-        { shortUrl },
+        {
+            shortUrl,
+            $expr: {
+                $gt: [
+                    { $add: ["$updatedAt", "$expiresAtMs"] },
+                    new Date()
+                ]
+            }
+        },
         { $inc: { accessCount: 1 } },
         { returnDocument: "after" }
-    ).select("originalUrl expiresAtMs updatedAt -_id") // Selects only these fields, excluding the _id that comes by default
+    ).select("originalUrl -_id");
 
-    if (!urlDatas) throw new NotFoundError("URL not found");
-    if (urlIsExpired(urlDatas)) throw new NotFoundError("Expired URL");
+    if (!urlDatas) throw new NotFoundError("URL not found or expired");
 
     return urlDatas.originalUrl;
 }
@@ -106,10 +113,4 @@ function isValidUrl(originalUrl){
     } catch (error) {
         return false;
     };
-}
-    
-function urlIsExpired({expiresAtMs, updatedAt}) {
-    const updatedAtMs = updatedAt.getTime();
-
-    return Date.now() - updatedAtMs >= expiresAtMs;
 }
