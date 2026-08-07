@@ -9,7 +9,7 @@ routes
     .post("/shortUrls", rateLimit.creationLimiter, auth, UrlController.createShortUrl)
     .get("/shortUrls", rateLimit.getUrlsLimiter, auth, UrlController.findAllShortUrls)
     .get("/shortUrls/:shortUrl/stats", rateLimit.getStatsLimiter, auth, UrlController.findShortUrlStats)
-    .get("/shortUrls/:shortUrl/redirect", rateLimit.redirectLimiter, auth, UrlController.redirectShortUrl)
+    .get("/shortUrls/:shortUrl/redirect", rateLimit.redirectLimiter, UrlController.redirectShortUrl)
     .put("/shortUrls/:shortUrl/renew", rateLimit.updateLimiter, auth, UrlController.renewShortUrl)
     .delete("/shortUrls/:shortUrl", rateLimit.deletionLimiter, auth, UrlController.deleteShortUrl)
 

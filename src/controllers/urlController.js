@@ -34,10 +34,10 @@ export default class UrlController {
 
     static async redirectShortUrl(req, res, next) {
         try {
-            const userId = req.user.id;
             const { shortUrl } = req.params;
-            const originalUrl = await urlService.findOriginalUrl(shortUrl, userId)
-            res.redirect(301, `${originalUrl}`);
+            const originalUrl = await urlService.findOriginalUrl(shortUrl)
+            res.set("Cache-Control", "no-store"); // prevents the browser from reusing the destination without consulting the API.
+            res.redirect(302, originalUrl);
         } catch (error) {
             next(error);
         }

@@ -42,12 +42,12 @@ export async function findShortUrlStats(shortUrl, userId) {
     return urlStats;
 }
 
-export async function findOriginalUrl(shortUrl, userId) {
+export async function findOriginalUrl(shortUrl) {
 
     if (shortUrl.length <= 0 || shortUrl.length > 9) throw new BadRequestError("The URL is invalid");
 
     const urlDatas = await url.findOneAndUpdate(
-        { shortUrl, userId },
+        { shortUrl },
         { $inc: { accessCount: 1 } },
         { returnDocument: "after" }
     ).select("originalUrl expiresAtMs updatedAt -_id") // Selects only these fields, excluding the _id that comes by default
